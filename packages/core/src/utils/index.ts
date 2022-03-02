@@ -1,0 +1,3 @@
+export {
+  insertAfter
+} from './dom';

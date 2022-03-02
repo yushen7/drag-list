@@ -1,0 +1,27 @@
+{
+  "name": "drag-list",
+  "version": "0.0.1",
+  "description": "The drag and drop list use to swap item.",
+  "main": "./src/index.js",
+  "scripts": {
+    "dev": "",
+    "build": ""
+  },
+  "keywords": [
+    "drag",
+    "and",
+    "drop",
+    "drag",
+    "swap"
+  ],
+  "author": "yox",
+  "license": "ISC",
+  "dependencies": {
+    "gulp-typescript": "^6.0.0-alpha.1",
+    "install": "^0.13.0",
+    "typescript": "^4.6.2"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2"
+  }
+}
