@@ -1,18 +1,18 @@
 import { DraggedItem } from '../types';
 
 export {
-  insertdraggedSrc,
+  insertActiveItem,
   getSwapItem,
   isDraggable
 } from './draggedItem'
 
 
 function initListData(
-  draggedSrc: DraggedItem,
+  activeItem: DraggedItem,
   dragList: DraggedItem[],
   swapGap: number
 ) {
-  const { el } = draggedSrc;
+  const { el } = activeItem;
   dragList.sort((a, b) => (a.index < b.index ? -1 : 1));
 
   // 初始化每个元素的位置
@@ -32,13 +32,13 @@ function initListData(
     const { offsetLeft, offsetTop } = el;
 
     // 处理非拖拽元素
-    if (id !== draggedSrc.id) {
-      const translateY = index > draggedSrc.index ? swapGap : 0;
+    if (id !== activeItem.id) {
+      const translateY = index > activeItem.index ? swapGap : 0;
       translate.y = translateY;
       el.style.transform = `translate(0, ${translateY}px)`;
     }
     // 处理拖拽的元素
-    if (id === draggedSrc.id) {
+    if (id === activeItem.id) {
       el.style.position = "fixed";
       el.style.top = ` ${offsetTop}px`;
       el.style.left = ` ${offsetLeft}px`;

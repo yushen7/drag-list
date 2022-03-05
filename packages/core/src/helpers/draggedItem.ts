@@ -1,38 +1,38 @@
 import { DraggedItem, MoveDirection } from './../types/index';
 import { insertAfter } from "../utils";
 
-export function insertdraggedSrc(
+export function insertActiveItem(
   container: HTMLElement,
-  draggedSrc,
-  willSwapEl
+  activeItem: DraggedItem,
+  willSwapEl: DraggedItem
 ) {
-  const { el: src, swapDirection } = draggedSrc,
+  const { el: src, swapDirection } = activeItem,
     { el: target } = willSwapEl;
-  if (swapDirection === "-y") {
+  if (swapDirection === MoveDirection.NegativeY) {
     container.insertBefore(src, target);
   }
-  if (swapDirection === "+y") {
+  if (swapDirection === MoveDirection.PositiveY) {
     insertAfter(container, src, target);
   }
 
-  if (swapDirection === "") {
+  if (swapDirection === MoveDirection.None) {
+    // 什么也不做
   }
 }
 
-export function getSwapItem(draggedSrc: DraggedItem, dragList: DraggedItem[]) {
-  const { x, y } = draggedSrc.translate;
-  const { moveDirection } = draggedSrc;
+export function getSwapItem(activeItem: DraggedItem, dragList: DraggedItem[]) {
+  const { y } = activeItem.translate;
+  const { moveDirection } = activeItem;
   for (const item of dragList) {
     const {
       translate: { y: nextY },
-      index,
       id,
       el,
     } = item;
     const threshold = el.offsetTop + nextY;
     const targetHeight = el.offsetHeight / 2;
-    const offsetTranslate = draggedSrc.el.offsetTop + y;
-    if (draggedSrc.id !== id) {
+    const offsetTranslate = activeItem.el.offsetTop + y;
+    if (activeItem.id !== id) {
       if (moveDirection === MoveDirection.PositiveY) {
         if (offsetTranslate > threshold) {
           continue;

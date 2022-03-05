@@ -1,55 +1,48 @@
 import { DraggedItem } from './types/index';
-import { getSwapItem, insertdraggedSrc } from "./helpers";
+import { getSwapItem, insertActiveItem } from "./helpers";
 
-/**
- *
- * @param {*} draggedSrc
- * @param {*} dragList
- * @param {*} swapGap
- * @returns
- */
 export function processSwap(
-  draggedSrc: DraggedItem,
+  activeItem: DraggedItem,
   dragList: DraggedItem[],
-  swapGap = draggedSrc.el.offsetHeight
+  swapGap = activeItem.el.offsetHeight
 ) {
-  const swapItem = getSwapItem(draggedSrc, dragList);
+  const swapItem = getSwapItem(activeItem, dragList);
   if (!swapItem) return null;
 
   {
     const { translate: swapTranslate } = swapItem;
-    if (draggedSrc.moveDirection === "+y") swapTranslate.y -= swapGap;
-    if (draggedSrc.moveDirection === "-y") swapTranslate.y += swapGap;
+    if (activeItem.moveDirection === "+y") swapTranslate.y -= swapGap;
+    if (activeItem.moveDirection === "-y") swapTranslate.y += swapGap;
     swapItem.el.style.transition = '.2s ease-out';
     swapItem.el.style.transform = `translate(0, ${swapTranslate.y}px)`;
   }
 
   {
-    const temp = draggedSrc.index;
-    draggedSrc.index = swapItem.index;
+    const temp = activeItem.index;
+    activeItem.index = swapItem.index;
     swapItem.index = temp;
   }
 
   {
-    const temp = draggedSrc.position;
-    draggedSrc.position = swapItem.position;
+    const temp = activeItem.position;
+    activeItem.position = swapItem.position;
     swapItem.position = temp;
   }
 
   {
-    draggedSrc.swapDirection = draggedSrc.moveDirection;
+    activeItem.swapDirection = activeItem.moveDirection;
   }
 
   return swapItem;
 }
 
-export async function processDragResult(draggedSrc: DraggedItem, willswapItem: DraggedItem, container: HTMLElement) {
+export async function processDragResult(activeItem: DraggedItem, willswapItem: DraggedItem, container: HTMLElement) {
   return new Promise((resolve, reject) => {
-    const { el: draggedEl } = draggedSrc;
+    const { el: draggedEl } = activeItem;
 
     const cb = () => {
       if (willswapItem) {
-        insertdraggedSrc(container, draggedSrc, willswapItem);
+        insertActiveItem(container, activeItem, willswapItem);
       }
       draggedEl.removeEventListener("transitionend", cb);
       resolve("done");
@@ -59,11 +52,12 @@ export async function processDragResult(draggedSrc: DraggedItem, willswapItem: D
 
     {
       const {
-        position: { x: px, y: py },
-      } = draggedSrc;
+        position: { x: targetX, y: targetY },
+      } = activeItem;
+
       const targetTranslate = {
-        x: px - draggedEl.offsetLeft,
-        y: py - draggedEl.offsetTop,
+        x: targetX - draggedEl.offsetLeft,
+        y: targetY - draggedEl.offsetTop,
       };
       draggedEl.style.transition = ".1s ease-out";
       draggedEl.style.transform = `translate(${targetTranslate.x}px, ${targetTranslate.y}px)`;

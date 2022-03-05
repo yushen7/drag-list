@@ -1,13 +1,22 @@
-import { Config, NormalizedConfig } from './../types/index';
+import { Config, NormalizedConfig } from "./../types/index";
 
 const DefaultConfig: Config = {
-  container: '#container',
+  container: "#container",
   items: [],
-  onSwap: () => {}
-}
-export function normalizeConfig (config: Config = DefaultConfig) {
-  if (typeof config.container === 'string') {
-    config.container = document.querySelector(config.container) as HTMLElement;
-  }  
-  return config as NormalizedConfig
+  onSwap: () => {},
+  activeClassName: '',
+  activeStyle: '',
+};
+export function normalizeConfig(config: Config) {
+  const merged = {
+    ...DefaultConfig,
+    ...config
+  }
+  if (typeof merged.container === "string") {
+    merged.container = document.querySelector(merged.container) as HTMLElement;
+  }
+  if (merged.activeClassName === undefined) {
+    merged.activeClassName = '';
+  }
+  return merged as NormalizedConfig;
 }

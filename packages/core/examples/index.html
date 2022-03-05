@@ -46,6 +46,10 @@
         color: #fff;
         /* margin: 20px 0px; */
       }
+      .active-item {
+        opacity: 0.8;
+        background-color: aqua;
+      }
     </style>
   </head>
   <body>
@@ -68,7 +72,9 @@
 
     <script>
 
-      DragList.mountdragList();
+      DragList.mountdragList({
+        activeClassName: 'active-item'
+      });
     </script>
   </body>
 </html>

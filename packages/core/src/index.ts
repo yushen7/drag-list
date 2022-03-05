@@ -29,10 +29,10 @@ function createdragListByRaw(list: HTMLCollection) {
 }
 
 export function mountdragList(config: Config) {
-  const normalizedConfig = normalizeConfig();
+  const normalizedConfig = normalizeConfig(config);
   const container = normalizedConfig.container;
   const rawList = container.children;
-  let draggedSrc = null;
+  let activeItem = null;
   let initOnStartDrag = false;
   let dragOffsetMove = {
     x: 0,
@@ -41,6 +41,8 @@ export function mountdragList(config: Config) {
   let willSwapEl = null;
   let swapGap = 0;
   let processingDragResult = false;
+  let dragging = false;
+
   handleEvents(container);
   const dragList = createdragListByRaw(rawList);
 
@@ -55,7 +57,7 @@ export function mountdragList(config: Config) {
     // 鼠标弹起来了，说明拖拽结束
     container.addEventListener("mouseup", dragEndHandler);
 
-    container.addEventListener('mouseleave', dragEndHandler);
+    container.addEventListener("mouseleave", dragEndHandler);
   }
 
   function dragStartHandler(e: MouseEvent) {
@@ -64,66 +66,74 @@ export function mountdragList(config: Config) {
     }
     const el = e.target as HTMLElement;
     if (isDraggable(el)) {
-      draggedSrc = dragList.find((item) => item.id === el.dataset.id);
+      activeItem = dragList.find((item) => item.id === el.dataset.id);
     }
-    // console.log("mousedown -> ", e.target.dataset.index);
   }
 
   function dragHandler(e: MouseEvent) {
-    if (!draggedSrc || processingDragResult) {
+    if (!activeItem || processingDragResult) {
       return;
     }
     if (!initOnStartDrag) {
-      onDragMoveStart(draggedSrc, dragList, e);
+      dragging = true;
+      onDragMoveStart(activeItem, dragList, e, normalizedConfig);
       initOnStartDrag = true;
     } else {
-      onDragMoving(draggedSrc, dragList, e);
+      onDragMoving(activeItem, dragList, e);
     }
   }
 
-  async function dragEndHandler(e: MouseEvent) {
-    if (processingDragResult || !draggedSrc) {
+  async function dragEndHandler() {
+    if (processingDragResult || !activeItem) {
       return;
     }
-    processingDragResult = true;
-    try {
-      await processDragResult(draggedSrc, willSwapEl, container);
-    } catch (error) {
-      throw new Error("Something wrong in the drag end progress: " + error);
+
+    if (dragging) {
+      processingDragResult = true;
+      try {
+        await processDragResult(activeItem, willSwapEl, container);
+      } catch (error) {
+        throw new Error("Something wrong in the drag end progress: " + error);
+      }
+      processingDragResult = false;
     }
-    processingDragResult = false;
-    clear();
-  }
 
-  function onDragMoveStart(draggedSrc: DraggedItem, dragList = [], e) {
-    initDragData(draggedSrc, e);
-    initListData(draggedSrc, dragList, swapGap);
+    clear(normalizedConfig);
   }
-
-  function initDragData(draggedSrc: DraggedItem, e: MouseEvent) {
+  function initDragData(activeItem: DraggedItem, e: MouseEvent) {
     dragOffsetMove = {
       x: e.pageX,
       y: e.pageY,
     };
-    swapGap = draggedSrc.el.offsetHeight;
+    swapGap = activeItem.el.offsetHeight;
+  }
+
+  function onDragMoveStart(
+    activeItem: DraggedItem,
+    dragList = [],
+    e: MouseEvent,
+    config: Config
+  ) {
+    initDragData(activeItem, e);
+    initListData(activeItem, dragList, swapGap, config);
   }
 
   function onDragMoving(
-    draggedSrc: DraggedItem,
+    activeItem: DraggedItem,
     dragList: DraggedItem[],
     e: MouseEvent
   ) {
     const { x, y } = dragOffsetMove;
-    const { el, translate } = draggedSrc;
+    const { el, translate } = activeItem;
     const result = {
       x: e.pageX - x,
       y: e.pageY - y,
     };
     if (result.y - translate.y > 0) {
-      draggedSrc.moveDirection = MoveDirection.PositiveY;
+      activeItem.moveDirection = MoveDirection.PositiveY;
     }
     if (result.y - translate.y < 0) {
-      draggedSrc.moveDirection = MoveDirection.NegativeY;
+      activeItem.moveDirection = MoveDirection.NegativeY;
     }
     // ??
     if (result.y - translate.y === 0) {
@@ -133,34 +143,37 @@ export function mountdragList(config: Config) {
     translate.x = result.x;
 
     el.style.transform = `translate(0, ${translate.y}px)`;
-    const processResult = processSwap(draggedSrc, dragList, swapGap);
+    const processResult = processSwap(activeItem, dragList, swapGap);
     if (processResult) {
       willSwapEl = processResult;
     }
   }
 
-  function clear() {
+  function clear(config: Config) {
     dragList.forEach((item) => {
       item.el.setAttribute("style", "");
     });
+    // - config
+    activeItem.el.classList.remove(config.activeClassName);
     dragOffsetMove = {
       x: 0,
       y: 0,
     };
-    draggedSrc = null;
+    activeItem = null;
     initOnStartDrag = false;
     willSwapEl = null;
     processingDragResult = false;
+    dragging = false;
   }
 }
 
 function initListData(
-  draggedSrc: DraggedItem,
+  activeItem: DraggedItem,
   dragList: DraggedItem[],
-  swapGap: number
+  swapGap: number,
+  config: Pick<Config, "activeClassName" | "activeStyle">
 ) {
-  const { el } = draggedSrc;
-  console.log(dragList,' draglist')
+  // 保证 元素顺序和 index 保持一致
   dragList.sort((a, b) => (a.index < b.index ? -1 : 1));
 
   // 初始化每个元素的位置
@@ -180,18 +193,22 @@ function initListData(
     const { offsetLeft, offsetTop } = el;
 
     // 处理非拖拽元素
-    if (id !== draggedSrc.id) {
-      const translateY = index > draggedSrc.index ? swapGap : 0;
+    if (id !== activeItem.id) {
+      const translateY = index > activeItem.index ? swapGap : 0;
       translate.y = translateY;
       el.style.transform = `translate(0, ${translateY}px)`;
     }
     // 处理拖拽的元素
-    if (id === draggedSrc.id) {
+    if (id === activeItem.id) {
+      // - config
+      config.activeClassName && el.classList.add(config.activeClassName);
+      // z-index 可以被覆盖
+      el.style.zIndex = "1";
+      config.activeStyle && el.setAttribute("style", config.activeStyle);
+      // 以下的样式是必须的~
       el.style.position = "fixed";
       el.style.top = ` ${offsetTop}px`;
       el.style.left = ` ${offsetLeft}px`;
-      el.style.opacity = "0.8";
-      el.style.zIndex = "1";
     }
   });
 }

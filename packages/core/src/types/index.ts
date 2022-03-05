@@ -31,11 +31,15 @@ export interface Config {
   /** 挂载的元素 */
   container: string | HTMLElement;
   /** 发生交换触发的回调 */
-  onSwap: () => void;
+  onSwap: (indexes: number[], changedIndexes: number[]) => void;
   /** 要渲染的元素们 */
   items: DraggedItem[];
   /** 方向 */
   layoutMode?: LayoutMode;
+  /** 拖拽中的类名 */
+  activeClassName?: string;
+  /** 拖拽中的样式 */
+  activeStyle?: string;
 }
 
 export interface NormalizedConfig extends Config {
