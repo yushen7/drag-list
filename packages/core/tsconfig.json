@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
     "lib": ["ESNext", "DOM"],
-    "target": "ES2015",
-    "moduleResolution": "Node"
+    "target": "ES5",
+    "moduleResolution": "Node",
+    "module": "es2015",
+    "removeComments": true,
+    "downlevelIteration": true
   }
 }

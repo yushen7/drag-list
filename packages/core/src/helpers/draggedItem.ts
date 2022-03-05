@@ -1,3 +1,4 @@
+import { DraggedItem, MoveDirection } from './../types/index';
 import { insertAfter } from "../utils";
 
 export function insertdraggedSrc(
@@ -18,7 +19,7 @@ export function insertdraggedSrc(
   }
 }
 
-export function getSwapEl(draggedSrc, dragList) {
+export function getSwapItem(draggedSrc: DraggedItem, dragList: DraggedItem[]) {
   const { x, y } = draggedSrc.translate;
   const { moveDirection } = draggedSrc;
   for (const item of dragList) {
@@ -32,7 +33,7 @@ export function getSwapEl(draggedSrc, dragList) {
     const targetHeight = el.offsetHeight / 2;
     const offsetTranslate = draggedSrc.el.offsetTop + y;
     if (draggedSrc.id !== id) {
-      if (moveDirection === "+y") {
+      if (moveDirection === MoveDirection.PositiveY) {
         if (offsetTranslate > threshold) {
           continue;
         }
@@ -40,7 +41,7 @@ export function getSwapEl(draggedSrc, dragList) {
           return item;
         }
       }
-      if (moveDirection === "-y") {
+      if (moveDirection === MoveDirection.NegativeY) {
         // debugger;
         if (offsetTranslate < threshold) {
           continue;

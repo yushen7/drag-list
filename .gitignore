@@ -1,4 +1,4 @@
 node_modules
-.pnpm-debug.log
 package-lock.json
 packages/core/lib/**/*
+*.log

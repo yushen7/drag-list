@@ -1,4 +1,5 @@
-import { getSwapEl, insertdraggedSrc } from "./helpers";
+import { DraggedItem } from './types/index';
+import { getSwapItem, insertdraggedSrc } from "./helpers";
 
 /**
  *
@@ -8,46 +9,47 @@ import { getSwapEl, insertdraggedSrc } from "./helpers";
  * @returns
  */
 export function processSwap(
-  draggedSrc,
-  dragList,
+  draggedSrc: DraggedItem,
+  dragList: DraggedItem[],
   swapGap = draggedSrc.el.offsetHeight
 ) {
-  const swapEl = getSwapEl(draggedSrc, dragList);
-  if (!swapEl) return null;
+  const swapItem = getSwapItem(draggedSrc, dragList);
+  if (!swapItem) return null;
 
   {
-    const { translate: swapTranslate } = swapEl;
+    const { translate: swapTranslate } = swapItem;
     if (draggedSrc.moveDirection === "+y") swapTranslate.y -= swapGap;
     if (draggedSrc.moveDirection === "-y") swapTranslate.y += swapGap;
-    swapEl.el.style = `transition: .2s ease-out; transform: translate(0, ${swapTranslate.y}px)`;
+    swapItem.el.style.transition = '.2s ease-out';
+    swapItem.el.style.transform = `translate(0, ${swapTranslate.y}px)`;
   }
 
   {
     const temp = draggedSrc.index;
-    draggedSrc.index = swapEl.index;
-    swapEl.index = temp;
+    draggedSrc.index = swapItem.index;
+    swapItem.index = temp;
   }
 
   {
     const temp = draggedSrc.position;
-    draggedSrc.position = swapEl.position;
-    swapEl.position = temp;
+    draggedSrc.position = swapItem.position;
+    swapItem.position = temp;
   }
 
   {
     draggedSrc.swapDirection = draggedSrc.moveDirection;
   }
 
-  return swapEl;
+  return swapItem;
 }
 
-export async function processDragResult(draggedSrc, willSwapEl, container) {
+export async function processDragResult(draggedSrc: DraggedItem, willswapItem: DraggedItem, container: HTMLElement) {
   return new Promise((resolve, reject) => {
     const { el: draggedEl } = draggedSrc;
 
     const cb = () => {
-      if (willSwapEl) {
-        insertdraggedSrc(container, draggedSrc, willSwapEl);
+      if (willswapItem) {
+        insertdraggedSrc(container, draggedSrc, willswapItem);
       }
       draggedEl.removeEventListener("transitionend", cb);
       resolve("done");
@@ -65,7 +67,6 @@ export async function processDragResult(draggedSrc, willSwapEl, container) {
       };
       draggedEl.style.transition = ".1s ease-out";
       draggedEl.style.transform = `translate(${targetTranslate.x}px, ${targetTranslate.y}px)`;
-      // animating = true;
     }
   });
 }
