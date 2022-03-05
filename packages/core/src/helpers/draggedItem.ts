@@ -1,4 +1,4 @@
-import { DraggedItem, MoveDirection } from './../types/index';
+import { DraggedItem, MoveDirection } from "./../types/index";
 import { insertAfter } from "../utils";
 
 export function insertActiveItem(
@@ -22,31 +22,36 @@ export function insertActiveItem(
 
 export function getSwapItem(activeItem: DraggedItem, dragList: DraggedItem[]) {
   const { y } = activeItem.translate;
+  const { index: activeIndex } =activeItem
   const { moveDirection } = activeItem;
+  const activeOffset = activeItem.el.offsetTop + y;
   for (const item of dragList) {
     const {
       translate: { y: nextY },
       id,
       el,
+      index
     } = item;
+
     const threshold = el.offsetTop + nextY;
-    const targetHeight = el.offsetHeight / 2;
-    const offsetTranslate = activeItem.el.offsetTop + y;
+    const checkGap = el.offsetHeight / 1.5;
+    let checkPoint: number;
     if (activeItem.id !== id) {
       if (moveDirection === MoveDirection.PositiveY) {
-        if (offsetTranslate > threshold) {
+        checkPoint = activeOffset + checkGap;
+        if (activeIndex > index) {
           continue;
         }
-        if (offsetTranslate + targetHeight - threshold >= 0) {
+        if (checkPoint >= threshold) {
           return item;
-        }
+        } 
       }
       if (moveDirection === MoveDirection.NegativeY) {
-        // debugger;
-        if (offsetTranslate < threshold) {
+        checkPoint = activeOffset - checkGap;
+        if (activeIndex < index) {
           continue;
         }
-        if (offsetTranslate - targetHeight - threshold <= 0) {
+        if (checkPoint <= threshold) {
           return item;
         }
       }

@@ -1,4 +1,4 @@
-import { DraggedItem } from './types/index';
+import { DraggedItem, MoveDirection } from './types/index';
 import { getSwapItem, insertActiveItem } from "./helpers";
 
 export function processSwap(
@@ -11,8 +11,8 @@ export function processSwap(
 
   {
     const { translate: swapTranslate } = swapItem;
-    if (activeItem.moveDirection === "+y") swapTranslate.y -= swapGap;
-    if (activeItem.moveDirection === "-y") swapTranslate.y += swapGap;
+    if (activeItem.moveDirection === MoveDirection.PositiveY) swapTranslate.y -= swapGap;
+    if (activeItem.moveDirection === MoveDirection.NegativeY) swapTranslate.y += swapGap;
     swapItem.el.style.transition = '.2s ease-out';
     swapItem.el.style.transform = `translate(0, ${swapTranslate.y}px)`;
   }
