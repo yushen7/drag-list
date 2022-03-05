@@ -8,13 +8,13 @@ export default {
   input: path.resolve(__dirname, "../src/index.ts"),
   output: [
     {
-      file: path.resolve(__dirname, "../lib/index.esm.js"),
+      file: path.resolve(__dirname, "../lib/index.esm.dev.js"),
       format: "es",
       sourcemap: true,
     },
     {
       name: 'DragList',
-      file: path.resolve(__dirname, "../lib/index.umd.js"),
+      file: path.resolve(__dirname, "../lib/index.umd.dev.js"),
       format: "umd",
       sourcemap: true,
     },
