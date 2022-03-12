@@ -4,7 +4,7 @@ import { getSwapItem, insertActiveItem } from "./helpers";
 export function processSwap(
   activeItem: DraggedItem,
   dragList: DraggedItem[],
-  swapGap = activeItem.el.offsetHeight
+  swapGap = activeItem.el.offsetHeight,
 ) {
   const swapItem = getSwapItem(activeItem, dragList);
   if (!swapItem) return null;

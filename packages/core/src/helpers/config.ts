@@ -1,4 +1,4 @@
-import { Config, NormalizedConfig } from "./../types/index";
+import { Config, NormalizedConfig } from "../types/index";
 
 const DefaultConfig: Config = {
   container: "#container",

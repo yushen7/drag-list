@@ -27,13 +27,18 @@ enum LayoutMode {
   Vertical = "vertical",
 }
 
+interface ConfigItem {
+  disabled?: boolean;
+  content?: string;
+}
+
 export interface Config {
   /** 挂载的元素 */
   container: string | HTMLElement;
   /** 发生交换触发的回调 */
   onSwap: (indexes: number[], changedIndexes: number[]) => void;
   /** 要渲染的元素们 */
-  items: DraggedItem[];
+  items: ConfigItem[];
   /** 方向 */
   layoutMode?: LayoutMode;
   /** 拖拽中的类名 */

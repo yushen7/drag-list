@@ -5,6 +5,6 @@
     "moduleResolution": "Node",
     "module": "es2015",
     "removeComments": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
   }
 }

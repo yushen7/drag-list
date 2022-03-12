@@ -37,6 +37,10 @@ export function getSwapItem(activeItem: DraggedItem, dragList: DraggedItem[]) {
     const checkGap = el.offsetHeight / 1.5;
     let checkPoint: number;
     if (activeItem.id !== id) {
+      // - config
+      if (item.disabled) {
+        continue
+      }
       if (moveDirection === MoveDirection.PositiveY) {
         checkPoint = activeOffset + checkGap;
         if (activeIndex > index) {

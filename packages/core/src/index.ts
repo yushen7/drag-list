@@ -1,10 +1,17 @@
+
 import { isDraggable } from "./helpers";
 import { processDragResult, processSwap } from "./interations";
 import { normalizeConfig } from "./helpers/config";
 import { Config, DraggedItem, MoveDirection } from "./types/index";
+import { NormalizedConfig } from "./types";
 
-function createdragListByRaw(list: HTMLCollection) {
+import { parseComponent } from "vue-template-compiler";
+
+parseComponent;
+
+function createdragListByRaw(list: HTMLCollection, config: NormalizedConfig) {
   const toArr = [...(list as any)];
+  const configItems = config.items || [];
   const dragList: DraggedItem[] = toArr.map((item, index) => ({
     el: item,
     id: `${index}`,
@@ -19,8 +26,9 @@ function createdragListByRaw(list: HTMLCollection) {
       x: 0,
       y: 0,
     },
+    disabled: configItems[index] ? configItems[index].disabled : false
   }));
-  dragList.forEach((item) => {
+  dragList.forEach((item, index) => {
     const { el, id } = item;
     el.dataset.canDrag = "true";
     el.dataset.id = id;
@@ -44,7 +52,7 @@ export function mountdragList(config: Config) {
   let dragging = false;
 
   handleEvents(container);
-  const dragList = createdragListByRaw(rawList);
+  const dragList = createdragListByRaw(rawList, normalizedConfig);
 
   function handleEvents(container: HTMLElement) {
     // 点下去，开始拖拽，标记拖拽元素
@@ -66,7 +74,10 @@ export function mountdragList(config: Config) {
     }
     const el = e.target as HTMLElement;
     if (isDraggable(el)) {
-      activeItem = dragList.find((item) => item.id === el.dataset.id);
+      const _activeItem = dragList.find((item) => item.id === el.dataset.id);
+      if (!_activeItem.disabled) {
+        activeItem = _activeItem;
+      }
     }
   }
 
@@ -212,3 +223,5 @@ function initListData(
     }
   });
 }
+
+
