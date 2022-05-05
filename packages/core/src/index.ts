@@ -36,7 +36,7 @@ function createdragListByRaw(list: HTMLCollection, config: NormalizedConfig) {
   return dragList;
 }
 
-export function mountdragList(config: Config) {
+export function mountDragList(config: Config) {
   const normalizedConfig = normalizeConfig(config);
   const container = normalizedConfig.container;
   const rawList = container.children;
