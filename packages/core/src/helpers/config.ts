@@ -1,9 +1,11 @@
 import { Config, NormalizedConfig } from "../types/index";
+import { noop } from "../utils";
 
 const DefaultConfig: Config = {
   container: "#container",
   items: [],
-  onSwap: () => {},
+  onSwap: noop,
+  onSwapEnd: noop,
   activeClassName: '',
   activeStyle: '',
 };

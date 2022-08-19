@@ -1,3 +1,4 @@
+export const noop = () => void 0;
 export {
-  insertAfter
+  insertAfter,
 } from './dom';

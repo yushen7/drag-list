@@ -1,52 +1,59 @@
 export const enum MoveDirection {
   None = '',
   PositiveY = '+y',
-  NegativeY = '-y'
+  NegativeY = '-y',
 }
 
 export interface DraggedItem {
-  id: string;
+  id: string
   /** dom 元素 */
-  el: HTMLElement;
+  el: HTMLElement
   /** 是否禁用 */
-  disabled?: boolean;
-  index: number;
+  disabled?: boolean
+  index: number
   translate: {
-    x: number;
-    y: number;
-  },
-  moveDirection: MoveDirection;
-  swapDirection: MoveDirection;
+    x: number
+    y: number
+  }
+  moveDirection: MoveDirection
+  swapDirection: MoveDirection
   position: {
-    x: number;
+    x: number
     y: number
   }
 }
 enum LayoutMode {
-  Horizontal = "horizontal",
-  Vertical = "vertical",
+  Horizontal = 'horizontal',
+  Vertical = 'vertical',
 }
 
 interface ConfigItem {
-  disabled?: boolean;
-  content?: string;
+  disabled?: boolean
+  content?: string
 }
 
 export interface Config {
   /** 挂载的元素 */
-  container: string | HTMLElement;
+  container: string | HTMLElement
   /** 发生交换触发的回调 */
-  onSwap: (indexes: number[], changedIndexes: number[]) => void;
+  onSwap: (
+    changedItemIndexInfo: { oldIndex: number; newIndex: number },
+    indexes: number[]
+  ) => void
+  onSwapEnd: (
+    changedItemIndexInfo: { oldIndex: number; newIndex: number },
+    indexes: number[]
+  ) => void
   /** 要渲染的元素们 */
-  items: ConfigItem[];
+  items: ConfigItem[]
   /** 方向 */
-  layoutMode?: LayoutMode;
+  layoutMode?: LayoutMode
   /** 拖拽中的类名 */
-  activeClassName?: string;
+  activeClassName?: string
   /** 拖拽中的样式 */
-  activeStyle?: string;
+  activeStyle?: string
 }
 
 export interface NormalizedConfig extends Config {
-  container: HTMLElement;
+  container: HTMLElement
 }
