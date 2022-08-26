@@ -5,8 +5,9 @@
       {
         "useBuiltIns": "usage",
         // 可以在控制台打印一些有用的信息
-        "debug": true,
-        "targets": "> 0.25%, not dead"
+        // "debug": true,
+        "targets": "> 0.25%, not dead",
+        "corejs": 3
       }
     ],
     "@babel/typescript"

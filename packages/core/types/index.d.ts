@@ -23,10 +23,21 @@ declare enum LayoutMode {
     Horizontal = "horizontal",
     Vertical = "vertical"
 }
+interface ConfigItem {
+    disabled?: boolean;
+    content?: string;
+}
 interface Config {
     container: string | HTMLElement;
-    onSwap: (indexes: number[], changedIndexes: number[]) => void;
-    items: DraggedItem[];
+    onSwap: (changedItemIndexInfo: {
+        oldIndex: number;
+        newIndex: number;
+    }, indexes: number[]) => void;
+    onSwapEnd: (changedItemIndexInfo: {
+        oldIndex: number;
+        newIndex: number;
+    }, indexes: number[]) => void;
+    items: ConfigItem[];
     layoutMode?: LayoutMode;
     activeClassName?: string;
     activeStyle?: string;

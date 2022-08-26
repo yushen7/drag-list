@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@drag-list/core": "workspace:../core",
     "vue": "^3.2.37"
   },
   "devDependencies": {

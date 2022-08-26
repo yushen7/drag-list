@@ -6,6 +6,8 @@
     "build": "rollup --config \"./config/rollup.config.prod.js\"",
     "typeCheck": "tsc --noEmit"
   },
+  "main": "./lib/index.esm.dev.js",
+  "types": "./types/index.d.ts",
   "type": "module",
   "files": [
     "lib/",
@@ -24,6 +26,10 @@
     "rollup-plugin-dts": "^4.2.0",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-serve": "^1.1.0",
-    "rollup-plugin-terser": "^7.0.2"
+    "rollup-plugin-terser": "^7.0.2",
+    "typescript": "^4.1"
+  },
+  "dependencies": {
+    "core-js": "^3.25.0"
   }
 }
