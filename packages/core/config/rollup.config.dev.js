@@ -5,6 +5,7 @@ import cjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import livereload from 'rollup-plugin-livereload'
 import serve from 'rollup-plugin-serve'
+import dts from 'rollup-plugin-dts'
 
 export default {
   input: path.resolve(__dirname, '../src/index.ts'),

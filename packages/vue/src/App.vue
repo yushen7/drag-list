@@ -1,22 +1,34 @@
 <script setup lang="ts">
 import { mountDragList } from '@drag-list/core'
-console.log(mountDragList, 'mountDragList')
+import { onMounted } from 'vue'
+
+const { activeClassName, containerHeight } = defineProps({
+  activeClassName: String,
+  containerHeight: String,
+})
+
+onMounted(() => {
+  mountDragList({
+    container: '#drag-list__container',
+    items: [],
+    activeClassName,
+  })
+})
 </script>
 
 <template>
-  
+  <div
+    id="drag-list__container"
+    :style="{
+      height: containerHeight,
+    }"
+  >
+    <slot />
+  </div>
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+#drag-list__container {
+  height: 100vh;
 }
 </style>

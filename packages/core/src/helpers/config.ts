@@ -1,24 +1,24 @@
-import { Config, NormalizedConfig } from "../types/index";
-import { noop } from "../utils";
+import { Config, NormalizedConfig } from '../types/index'
+import { noop } from '../utils'
 
 const DefaultConfig: Config = {
-  container: "#container",
+  container: '#container',
   items: [],
   onSwap: noop,
   onSwapEnd: noop,
-  activeClassName: '',
+  activeClassName: '__DRAG_LIST_INTERNAL_CLASS_NAME__',
   activeStyle: '',
-};
+}
 export function normalizeConfig(config: Config) {
   const merged = {
     ...DefaultConfig,
-    ...config
+    ...config,
   }
-  if (typeof merged.container === "string") {
-    merged.container = document.querySelector(merged.container) as HTMLElement;
+  if (typeof merged.container === 'string') {
+    merged.container = document.querySelector(merged.container) as HTMLElement
   }
   if (merged.activeClassName === undefined) {
-    merged.activeClassName = '';
+    merged.activeClassName = ''
   }
-  return merged as NormalizedConfig;
+  return merged as NormalizedConfig
 }
